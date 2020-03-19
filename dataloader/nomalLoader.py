@@ -19,8 +19,9 @@ def dataloader(filepath):
     normal_gts = []
     temp = filepath
 
-    filepathl = temp + 'data_depth_velodyne/train'
-    filepathgt = temp + 'gt/out/train'
+    filepathi = temp + '/run/media/sssssy/File/Repositories/data/KITTI-raw/'
+    filepathl = temp + '/run/media/sssssy/File/Repositories/data/KITTI/train'
+    filepathgt = temp + '/run/media/sssssy/File/Repositories/data/KITTI/train'
     seqs = [seq for seq in os.listdir(filepathl) if seq.find('sync') > -1]
     left_fold = '/image_02/data'
     right_fold = '/image_03/data'
@@ -28,8 +29,8 @@ def dataloader(filepath):
     lidar_foldr = '/proj_depth/velodyne_raw/image_03'
 
     for seq in seqs:
-        left_path = os.path.join(filepathl, seq) + left_fold
-        right_path= os.path.join(filepathl, seq) + right_fold
+        left_path = os.path.join(filepathi, seq[0:10], seq) + left_fold
+        right_path= os.path.join(filepathi, seq[0:10], seq) + right_fold
         lc= [os.path.join(left_path, img) for img in os.listdir(left_path)]
         lc.sort()
 
@@ -40,20 +41,21 @@ def dataloader(filepath):
         imagesl = np.append(imagesl, lc)
         imagesl = np.append(imagesl, rc)
 
-        gt_path = os.path.join(filepathgt, seq)
         lids2l = os.path.join(filepathl, seq) + lidar_foldl
-        lidar2l = [os.path.join(lids2l, lid) for lid in os.listdir(temp)]
+        lidar2l = [os.path.join(lids2l, lid) for lid in os.listdir(lids2l)]
         lidar2l.sort()
         normalS = np.append(normalS, lidar2l)
         lids2r = os.path.join(filepathl, seq) + lidar_foldr
-        lidar2r = [os.path.join(lids2r, lid) for lid in os.listdir(temp)]
+        lidar2r = [os.path.join(lids2r, lid) for lid in os.listdir(lids2r)]
         lidar2r.sort()
         normalS = np.append(normalS, lidar2r)
 
+        gt_path = os.path.join(filepathgt, seq)
         gt_imgs = [os.path.join(gt_path, norm) for norm in os.listdir(gt_path)]
         gt_imgs.sort()
         normal_gts= np.append(normal_gts, gt_imgs)
         normal_gts= np.append(normal_gts, gt_imgs)
+        break
 
     left_train = imagesl
     normalS_train = normalS
@@ -61,3 +63,6 @@ def dataloader(filepath):
 
 if __name__ == '__main__':
     datapath = ''
+
+    for i in dataloader(datapath):
+        print(i[0])

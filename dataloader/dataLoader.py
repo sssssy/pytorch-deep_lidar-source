@@ -17,9 +17,10 @@ def dataloader(filepath):
     depths = []
 
     temp = filepath
-    filepathl = temp + 'data_depth_velodyne/train'
-    filepathd = temp + 'data_depth_annotated/train'
-    filepathgt = temp + 'gt/out/train'
+    filepathi = temp + '/run/media/sssssy/File/Repositories/data/KITTI-raw/'
+    filepathl = temp + '/run/media/sssssy/File/Repositories/data/KITTI/train/'
+    filepathd = temp + '/run/media/sssssy/File/Repositories/data/KITTI/train/'
+    filepathgt = temp + '/run/media/sssssy/File/Repositories/data/KITTI/train/'
 
     seqs = [seq for seq in os.listdir(filepathl) if seq.find('sync') > -1]
     left_fold = '/image_02/data'
@@ -32,32 +33,34 @@ def dataloader(filepath):
     for seq in seqs:
         temp = os.path.join(filepathgt, seq)
 
-        imgsl = os.path.join(filepathl, seq) + left_fold
-        imagel = [os.path.join(imgsl, img) for img in os.listdir(temp)]
+        imgsl = os.path.join(filepathi, seq[0:10], seq) + left_fold
+        imagel = [os.path.join(imgsl, img) for img in os.listdir(imgsl)]
         imagel.sort()
         images = np.append(images, imagel)
-        imgsr = os.path.join(filepathl, seq) + right_fold
-        imager = [os.path.join(imgsr, img) for img in os.listdir(temp)]
+        imgsr = os.path.join(filepathi, seq[0:10], seq) + right_fold
+        imager = [os.path.join(imgsr, img) for img in os.listdir(imgsr)]
         imager.sort()
         images = np.append(images, imager)
 
         lids2l = os.path.join(filepathl, seq) + lidar_foldl
-        lidar2l = [os.path.join(lids2l, lid) for lid in os.listdir(temp)]
+        lidar2l = [os.path.join(lids2l, lid) for lid in os.listdir(lids2l)]
         lidar2l.sort()
         lidars = np.append(lidars, lidar2l)
         lids2r = os.path.join(filepathl, seq) + lidar_foldr
-        lidar2r = [os.path.join(lids2r, lid) for lid in os.listdir(temp)]
+        lidar2r = [os.path.join(lids2r, lid) for lid in os.listdir(lids2r)]
         lidar2r.sort()
         lidars = np.append(lidars, lidar2r)
 
         depsl = os.path.join(filepathd, seq) + depth_foldl
-        depthl = [os.path.join(depsl, dep) for dep in os.listdir(temp)]
+        depthl = [os.path.join(depsl, dep) for dep in os.listdir(depsl)]
         depthl.sort()
         depths = np.append(depths, depthl)
         depsr = os.path.join(filepathd, seq) + depth_foldr
-        depthr = [os.path.join(depsr, dep) for dep in os.listdir(temp)]
+        depthr = [os.path.join(depsr, dep) for dep in os.listdir(depsr)]
         depthr.sort()
         depths = np.append(depths, depthr)
+
+        break
 
     left_train = images
     lidar2_train = lidars
@@ -65,8 +68,10 @@ def dataloader(filepath):
 
     return left_train,lidar2_train,depth_train
 
-
 if __name__ == '__main__':
     datapath = ''
+
+    for i in dataloader(datapath):
+        print(i[0])
 
 
